@@ -15,10 +15,10 @@ from mylib.lib import (
 )
 
 @pytest.fixture(scope="module")
-def test_start():
+def spark():
     spark = start_spark("MentalHealthCOVID")
     yield spark
-
+    #end_spark(spark)
 
 def test_end(spark):
     assert end_spark(spark) is not None
