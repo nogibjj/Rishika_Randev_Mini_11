@@ -2,6 +2,7 @@
 Test goes here
 
 """
+import pytest
 
 from mylib.lib import (
     start_spark,
@@ -13,7 +14,7 @@ from mylib.lib import (
     query,
 )
 
-
+@pytest.fixture(scope='module')
 def test_start():
     spark = start_spark("MentalHealthCOVID")
     return spark
