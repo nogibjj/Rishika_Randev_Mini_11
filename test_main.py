@@ -14,10 +14,10 @@ from mylib.lib import (
     query,
 )
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def test_start():
     spark = start_spark("MentalHealthCOVID")
-    return spark
+    yield spark
 
 
 def test_end(spark):
@@ -58,7 +58,6 @@ def test_query(spark):
 
 
 if __name__ == "__main__":
-    spark = test_start()
     test_extract()
     test_load_data(spark)
     test_describe(spark)
