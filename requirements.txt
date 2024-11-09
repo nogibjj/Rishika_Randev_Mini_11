@@ -13,3 +13,4 @@ pandas
 #databricks
 python-dotenv
 databricks-sql-connector
+pyspark

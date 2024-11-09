@@ -3,12 +3,24 @@ Test goes here
 
 """
 
-from mylib.extract import extract
-#from mylib.transform_load import load
-from mylib.query import query
-from databricks import sql
-from dotenv import load_dotenv
-import os
+from mylib.lib import (
+    start_spark,
+    end_spark,
+    extract,
+    load_data,
+    describe,
+    example_transform,
+    query,
+)
+
+
+def test_start():
+    spark = start_spark("MentalHealthCOVID")
+    return spark
+
+
+def test_end(spark):
+    assert end_spark(spark) is not None
 
 
 def test_extract():
@@ -16,38 +28,39 @@ def test_extract():
     assert extracted_data == "data/MH.csv"
 
 
-def test_transform_load():
-        load_dotenv()
-        access_token = os.getenv("databricks")
-        server_host = os.getenv("server_host")
-        http_path = os.getenv("http_path")
-        with sql.connect(server_hostname=server_host,
-                     http_path=http_path,
-                     access_token=access_token) as conn:
-            c = conn.cursor()
-            c.execute("SELECT * FROM rr368_MentalHealth LIMIT 4")
-            result = c.fetchall()
-            assert result is not None
-            c.close()
-        conn.close()
+def test_load_data(spark):
+    df = load_data(spark)
+    assert df is not None
 
 
-def test_query():
-    input = "WITH t1 AS (SELECT Indicator, MAX(Value) Max_Value_Across_States \
+def test_describe(spark):
+    df = load_data(spark)
+    assert describe(df) is not None
+
+
+def test_transform(spark):
+    df = load_data(spark)
+    assert example_transform(df) is not None
+
+
+def test_query(spark):
+    df = load_data(spark)
+    result = query(
+        spark,
+        df,
+        "SELECT Indicator, MAX(Value) Max_Value_Across_States \
         FROM default.rr368_mentalhealth \
-        GROUP BY Indicator) \
-        SELECT t2.State, t2.Indicator, t2.Value, \
-        t1.Max_Value_Across_States, \
-        RANK() OVER(PARTITION BY t2.Indicator ORDER BY t2.Value DESC) Value_Rank \
-        FROM default.rr368_mentalhealth AS t2 \
-        JOIN t1 \
-        ON (t1.Indicator = t2.Indicator) \
-        LIMIT 1"
-    results = query(input)
-    assert results == "Success"
+        GROUP BY Indicator",
+        "MentalHealthCOVID",
+    )
+    assert result is not None
 
 
 if __name__ == "__main__":
+    spark = test_start()
     test_extract()
-    test_transform_load()
-    test_query()
+    test_load_data(spark)
+    test_describe(spark)
+    test_transform(spark)
+    test_query(spark)
+    test_end(spark)
