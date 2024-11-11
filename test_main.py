@@ -18,11 +18,7 @@ from mylib.lib import (
 def spark():
     spark = start_spark("MentalHealthCOVID")
     yield spark
-    #end_spark(spark)
-
-def test_end(spark):
-    assert end_spark(spark) is not None
-
+    end_spark(spark)
 
 def test_extract():
     extracted_data = extract()
@@ -63,4 +59,3 @@ if __name__ == "__main__":
     test_describe(spark)
     test_transform(spark)
     test_query(spark)
-    test_end(spark)

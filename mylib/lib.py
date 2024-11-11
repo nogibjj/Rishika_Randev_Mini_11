@@ -5,6 +5,7 @@ import os
 import requests
 import pandas as pd
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 
 from pyspark.sql.types import (
      StructType, 
@@ -52,9 +53,9 @@ def extract(url="https://data.cdc.gov/api/views/8pt5-q6wp/rows.csv?accessType=DO
     print("Successfully extracted data")   
     return file_path
 
-def load_data(spark, data="data/MH.csv", name="MentalHealthCOVID"):
+def load_data(spark1, data="data/MH.csv", name="MentalHealthCOVID"):
+    #need to fix the start spark here
     """load data"""
-    # data preprocessing by setting schema
     schema = StructType([
         StructField("Indicator", StringType(), True),
         StructField("Group", StringType(), True),
@@ -64,18 +65,16 @@ def load_data(spark, data="data/MH.csv", name="MentalHealthCOVID"):
         StructField("Value", FloatType(), True),
         StructField("High CI", FloatType(), True)
     ])
-
+    spark = start_spark("MentalHealthCOVID")
     df = spark.read.option("header", "true").schema(schema).csv(data)
-
     log_output("load data", df.limit(10).toPandas().to_markdown())
-
     return df
 
 
 def query(spark, df, query, name): 
     """queries using spark sql"""
     df = df.createOrReplaceTempView(name)
-
+    # need to fix the spark being used here
     log_output("query data", spark.sql(query).toPandas().to_markdown(), query)
 
     return spark.sql(query).show()
@@ -87,10 +86,9 @@ def describe(df):
     return df.describe().show()
 
 def example_transform(df):
-    avgs = df.groupby(by='Indicator')['Value'].transform('mean') 
-    df['Average Value for Indicator'] = avgs
-    log_output("transform data", df.limit(10).toPandas().to_markdown())
-
-    return df.show()
+    avg_df = df.groupBy("Indicator").agg(F.avg("Value").alias("Average Value of Indicator"))
+    df_with_avg = df.join(avg_df, on="Indicator", how="left")
+    log_output("transform data", df_with_avg.limit(10).toPandas().to_markdown())
+    return df_with_avg.show()
 
 

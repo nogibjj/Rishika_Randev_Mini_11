@@ -10,7 +10,8 @@ ruff==0.0.284
 fire==0.7.0
 #ds
 pandas
-#databricks
+#data
 python-dotenv
 databricks-sql-connector
 pyspark
+tabulate
