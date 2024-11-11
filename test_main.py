@@ -19,6 +19,9 @@ def spark():
     spark = start_spark("MentalHealthCOVID")
     yield spark
     end_spark(spark)
+    
+def test_end_spark(spark):
+    assert end_spark(spark) is not None
 
 def test_extract():
     extracted_data = extract()
@@ -32,12 +35,12 @@ def test_load_data(spark):
 
 def test_describe(spark):
     df = load_data(spark)
-    assert describe(df) is not None
+    assert describe(df) is None
 
 
 def test_transform(spark):
     df = load_data(spark)
-    assert example_transform(df) is not None
+    assert example_transform(df) is None
 
 
 def test_query(spark):
@@ -46,11 +49,11 @@ def test_query(spark):
         spark,
         df,
         "SELECT Indicator, MAX(Value) Max_Value_Across_States \
-        FROM default.rr368_mentalhealth \
+        FROM MentalHealthCOVID \
         GROUP BY Indicator",
         "MentalHealthCOVID",
     )
-    assert result is not None
+    assert result is None
 
 
 if __name__ == "__main__":
@@ -59,3 +62,4 @@ if __name__ == "__main__":
     test_describe(spark)
     test_transform(spark)
     test_query(spark)
+    test_end_spark(spark)

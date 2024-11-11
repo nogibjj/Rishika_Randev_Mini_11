@@ -53,8 +53,7 @@ def extract(url="https://data.cdc.gov/api/views/8pt5-q6wp/rows.csv?accessType=DO
     print("Successfully extracted data")   
     return file_path
 
-def load_data(spark1, data="data/MH.csv", name="MentalHealthCOVID"):
-    #need to fix the start spark here
+def load_data(spark, data="data/MH.csv", name="MentalHealthCOVID"):
     """load data"""
     schema = StructType([
         StructField("Indicator", StringType(), True),
@@ -65,7 +64,7 @@ def load_data(spark1, data="data/MH.csv", name="MentalHealthCOVID"):
         StructField("Value", FloatType(), True),
         StructField("High CI", FloatType(), True)
     ])
-    spark = start_spark("MentalHealthCOVID")
+    #spark = start_spark("MentalHealthCOVID")
     df = spark.read.option("header", "true").schema(schema).csv(data)
     log_output("load data", df.limit(10).toPandas().to_markdown())
     return df
@@ -74,9 +73,7 @@ def load_data(spark1, data="data/MH.csv", name="MentalHealthCOVID"):
 def query(spark, df, query, name): 
     """queries using spark sql"""
     df = df.createOrReplaceTempView(name)
-    # need to fix the spark being used here
     log_output("query data", spark.sql(query).toPandas().to_markdown(), query)
-
     return spark.sql(query).show()
 
 def describe(df):
