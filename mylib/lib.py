@@ -86,7 +86,8 @@ def describe(df):
     return df.describe().show()
 
 def example_transform(df):
-    avg_df = df.groupBy("Indicator").agg(F.avg("Value").alias("Average Value of Indicator"))
+    avg_df = df.groupBy("Indicator")\
+        .agg(F.avg("Value").alias("Average Value of Indicator"))
     df_with_avg = df.join(avg_df, on="Indicator", how="left")
     log_output("transform data", df_with_avg.limit(10).toPandas().to_markdown())
     return df_with_avg.show()
