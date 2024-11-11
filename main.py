@@ -23,7 +23,7 @@ def main():
             spark,
             df,
             "SELECT Indicator, MAX(Value) Max_Value_Across_States \
-        FROM default.rr368_mentalhealth \
+        FROM MentalHealthCOVID \
         GROUP BY Indicator",
             "MentalHealthCOVID",
         )

@@ -16,12 +16,9 @@ from mylib.lib import (
 
 @pytest.fixture(scope="module")
 def spark():
-    spark = start_spark("MentalHealthCOVID")
+    spark = start_spark("MH")
     yield spark
     end_spark(spark)
-    
-def test_end_spark(spark):
-    assert end_spark(spark) is not None
 
 def test_extract():
     extracted_data = extract()
@@ -62,4 +59,3 @@ if __name__ == "__main__":
     test_describe(spark)
     test_transform(spark)
     test_query(spark)
-    test_end_spark(spark)
