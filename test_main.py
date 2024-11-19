@@ -1,61 +1,31 @@
 """
-Test goes here
-
+Test connection to databricks
 """
-import pytest
+import requests
+from dotenv import load_dotenv
+import os
 
-from mylib.lib import (
-    start_spark,
-    end_spark,
-    extract,
-    load_data,
-    describe,
-    example_transform,
-    query,
-)
+# Load environment variables
+load_dotenv()
+server_h = os.getenv("SERVER_HOSTNAME")
+access_token = os.getenv("ACCESS_TOKEN")
+FILESTORE_PATH = "/dbfs/tmp/MH_COVID.csv"
+url = f"https://{server_h}/api/2.0"
 
-@pytest.fixture(scope="module")
-def spark():
-    spark = start_spark("MH")
-    yield spark
-    end_spark(spark)
+# Function to check if a file path exists and auth settings still work
+def check_filestore_path(path, headers): 
+    try:
+        response = requests.get(url + f"/dbfs/get-status?path={path}", headers=headers)
+        response.raise_for_status()
+        return response.json()['path'] is not None
+    except Exception as e:
+        print(f"Error checking file path: {e}")
+        return False
 
-def test_extract():
-    extracted_data = extract()
-    assert extracted_data == "data/MH.csv"
-
-
-def test_load_data(spark):
-    df = load_data(spark)
-    assert df is not None
-
-
-def test_describe(spark):
-    df = load_data(spark)
-    assert describe(df) is None
-
-
-def test_transform(spark):
-    df = load_data(spark)
-    assert example_transform(df) is None
-
-
-def test_query(spark):
-    df = load_data(spark)
-    result = query(
-        spark,
-        df,
-        "SELECT Indicator, MAX(Value) Max_Value_Across_States \
-        FROM MentalHealthCOVID \
-        GROUP BY Indicator",
-        "MentalHealthCOVID",
-    )
-    assert result is None
-
+# Test if the specified FILESTORE_PATH exists
+def test_databricks():
+    headers = {'Authorization': f'Bearer {access_token}'}
+    assert check_filestore_path(FILESTORE_PATH, headers) is True
 
 if __name__ == "__main__":
-    test_extract()
-    test_load_data(spark)
-    test_describe(spark)
-    test_transform(spark)
-    test_query(spark)
+    test_databricks()
