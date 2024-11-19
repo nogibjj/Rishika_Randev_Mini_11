@@ -15,4 +15,4 @@ python-dotenv
 databricks-sql-connector
 pyspark
 tabulate
-urllib
+
