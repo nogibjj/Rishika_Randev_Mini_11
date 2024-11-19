@@ -18,7 +18,7 @@ The dataset used in this project shows the frequency of depression and anxiety s
 5. Create a test_main.py script which ensures that the Databricks DBFS file path is accessible.
 
 ## ☑️ Databricks
-Databricks notebooks were used to create the Python scripts and then run them on a personal compute. To set up a personal compute, follow these settings:
+Databricks notebooks were used to create the Python scripts and then run them on a personal compute. The changes on Databricks were later synced to GitHub. To set up a personal compute, follow these settings:
 <img width="1106" alt="Screenshot 2024-11-18 at 8 04 15 PM" src="https://github.com/user-attachments/assets/60e929fd-70b7-4088-a0c4-cfa5eeaad2bb">
 
 
