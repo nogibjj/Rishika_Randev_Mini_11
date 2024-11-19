@@ -24,8 +24,8 @@ jobs:
         run: make lint
       - name: test
         env:
-          databricks: ${{ secrets.DATABRICKS}}
-          server_host: ${{ secrets.SERVER_HOST}}
+          databricks: ${{ secrets.ACCESS_TOKEN}}
+          server_host: ${{ secrets.SERVER_HOSTNAME}}
           http_path: ${{ secrets.HTTP_PATH}}
         run: make test
       - name: format
