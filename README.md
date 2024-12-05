@@ -1,4 +1,3 @@
-[![CI](https://github.com/nogibjj/Rishika_Randev_Mini_10/actions/workflows/cicd.yml/badge.svg?branch=main)](https://github.com/nogibjj/Rishika_Randev_Mini_10/actions/workflows/cicd.yml)
 # Rishika Randev's Python Script for IDS706 Week 11
 
 ## ☑️ Requirements (Mini Project 11):
